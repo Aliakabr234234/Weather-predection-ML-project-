@@ -7,6 +7,11 @@ import joblib
 import numpy as np
 import sys
 
+# Precipitation thresholds for weather condition classification (in mm)
+THRESHOLD_DRY = 0.5
+THRESHOLD_LIGHT = 2.5
+THRESHOLD_MODERATE = 7.5
+
 
 def load_model(model_path='weather_model.pkl'):
     """Load trained model from file"""
@@ -44,8 +49,9 @@ def predict_precipitation(model, temperature, humidity, pressure, wind_speed):
     # Prepare input data
     features = np.array([[temperature, humidity, pressure, wind_speed]])
     
-    # Make prediction
+    # Make prediction and ensure non-negative
     prediction = model.predict(features)[0]
+    prediction = max(0, prediction)
     
     return prediction
 
@@ -64,11 +70,11 @@ def display_prediction(temperature, humidity, pressure, wind_speed, precipitatio
     print(f"  Expected Precipitation: {precipitation:.2f} mm")
     
     # Add interpretation
-    if precipitation < 0.5:
+    if precipitation < THRESHOLD_DRY:
         weather_condition = "No significant precipitation expected (Dry)"
-    elif precipitation < 2.5:
+    elif precipitation < THRESHOLD_LIGHT:
         weather_condition = "Light precipitation expected"
-    elif precipitation < 7.5:
+    elif precipitation < THRESHOLD_MODERATE:
         weather_condition = "Moderate precipitation expected"
     else:
         weather_condition = "Heavy precipitation expected"

@@ -129,6 +129,8 @@ def main():
     X, y = prepare_data(df)
     
     # Split data into training and testing sets
+    # Note: Using 20% test split. For production use, consider a larger dataset
+    # or cross-validation for more robust evaluation.
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
